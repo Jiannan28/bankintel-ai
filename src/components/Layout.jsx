@@ -9,13 +9,13 @@ const navItems = [
   { label: 'Intelligence Hub', path: '/intelligence', icon: Radar },
   { label: 'Campaign Ideation', path: '/ideation', icon: Sparkles },
   { label: 'Brainstorm Studio', path: '/brainstorm', icon: Lightbulb },
-  { label: 'Template Library', path: '/templates', icon: LayoutTemplate },
   { label: 'Scoring Engine', path: '/scoring', icon: Gauge },
   { label: 'Validation', path: '/validation', icon: CheckSquare },
   { label: 'Simulation', path: '/simulation', icon: LineChart },
   { label: 'Message Builder', path: '/messages', icon: Mail },
   { label: 'Distribution', path: '/distribution', icon: Send },
   { label: 'Performance', path: '/performance', icon: BarChart3 },
+  { label: 'Template Library', path: '/templates', icon: LayoutTemplate },
 ];
 
 export default function Layout() {
