@@ -1,6 +1,10 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
-const FEED_URL = 'https://news.google.com/rss/search?q=hong+kong+banking+OR+finance+OR+investment+when:2d&hl=en-HK&gl=HK&ceid=HK:en';
+const FEED_URLS = [
+  'https://finance.yahoo.com/news/rssindex',
+  'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114',
+  'https://news.google.com/rss/search?q=hong+kong+banking+OR+finance+OR+investment+when:2d&hl=en-HK&gl=HK&ceid=HK:en',
+];
 const MAX_ITEMS = 10;
 
 const decode = (s) => s
