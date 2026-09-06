@@ -19,6 +19,7 @@ function parseFeed(xml) {
   for (const block of blocks) {
     const title = block.match(/<title>([\s\S]*?)<\/title>/)?.[1];
     const pubDate = block.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1];
+    const rawDesc = block.match(/<description>([\s\S]*?)<\/description>/)?.[1];
     if (!title) continue;
     let headline = decode(title);
     let source = block.match(/<source[^>]*>([\s\S]*?)<\/source>/)?.[1];
@@ -29,7 +30,8 @@ function parseFeed(xml) {
     }
     out.push({
       headline,
-      source: source ? decode(source) : 'Google News',
+      description: rawDesc ? decode(rawDesc).slice(0, 400) : '',
+      source: source ? decode(source) : 'RSS Feed',
       published_date: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
     });
   }
@@ -44,10 +46,21 @@ export default async function(req) {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const res = await fetch(FEED_URL, { headers: { 'User-Agent': 'Mozilla/5.0' } });
-    if (!res.ok) return Response.json({ error: `Feed fetch failed: ${res.status}` }, { status: 502 });
-    const feedItems = parseFeed(await res.text());
-    if (feedItems.length === 0) return Response.json({ created: 0, checked: 0 });
+    let feedItems = [];
+    let lastStatus = 0;
+    for (const url of FEED_URLS) {
+      try {
+        const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+        lastStatus = res.status;
+        if (res.ok) {
+          feedItems = parseFeed(await res.text());
+          if (feedItems.length > 0) break;
+        }
+      } catch (e) { /* try next feed */ }
+    }
+    if (feedItems.length === 0) {
+      return Response.json({ error: `All news feeds unavailable (last status: ${lastStatus})` }, { status: 502 });
+    }
 
     // Dedupe against headlines already in the hub
     const existing = await base44.entities.InvestmentNews.list('-published_date', 200);
@@ -74,7 +87,7 @@ For each item return:
 - summary: one factual sentence based only on the headline — do not invent details
 
 Items:
-${fresh.map((f, i) => `${i}. ${f.headline}`).join('\n')}
+${fresh.map((f, i) => `${i}. ${f.headline}${f.description ? ` — ${f.description}` : ''}`).join('\n')}
 
 Respond with items in the same order.`,
       response_json_schema: {
