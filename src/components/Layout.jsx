@@ -34,7 +34,7 @@ export default function Layout() {
             </div>
             <div>
               <h1 className="font-display text-lg leading-tight">Meridian</h1>
-              <p className="text-[11px] text-white/60 tracking-wide uppercase">Market Intelligence</p>
+              <p className="text-[11px] text-white/60 tracking-wide uppercase">Market Intelligence for Growth</p>
             </div>
           </div>
         </div>
