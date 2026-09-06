@@ -24,7 +24,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    let cancelled = false;
+
+    const load = async () => {
       try {
         const [signals, events, news, ideas, messages, distributions] = await Promise.all([
           base44.entities.CustomerSignal.list('-signal_date', 200),
@@ -34,6 +36,7 @@ export default function Dashboard() {
           base44.entities.MarketingMessage.list('-created_date', 200),
           base44.entities.Distribution.list('-created_date', 200),
         ]);
+        if (cancelled) return;
         const ideasArr = ideas || [];
         setStats({
           signals: (signals || []).length,
@@ -50,9 +53,22 @@ export default function Dashboard() {
       } catch (e) {
         // ignore
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
-    })();
+    };
+
+    load();
+
+    // Auto-sync: refresh whenever data changes in any tab
+    const unsubscribes = [
+      'CustomerSignal', 'MarketEvent', 'InvestmentNews',
+      'CampaignIdea', 'MarketingMessage', 'Distribution',
+    ].map(name => base44.entities[name].subscribe(() => load()));
+
+    return () => {
+      cancelled = true;
+      unsubscribes.forEach(unsubscribe => unsubscribe());
+    };
   }, []);
 
   const tiles = [
