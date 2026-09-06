@@ -16,6 +16,26 @@ const tabs = [
   { key: 'news', label: 'Investment News', icon: TrendingUp },
 ];
 
+const eventCategories = [
+  { value: 'regulatory', label: 'Regulatory' },
+  { value: 'economic', label: 'Economic' },
+  { value: 'competitor', label: 'Competitor' },
+  { value: 'market', label: 'Market' },
+  { value: 'geopolitical', label: 'Geopolitical' },
+];
+
+const newsCategories = [
+  { value: 'equities', label: 'Equities' },
+  { value: 'securities', label: 'Securities' },
+  { value: 'fixed_income', label: 'Fixed Income (Bonds)' },
+  { value: 'fx', label: 'FX' },
+  { value: 'commodities', label: 'Commodities' },
+  { value: 'macro', label: 'Macro' },
+  { value: 'crypto', label: 'Crypto' },
+  { value: 'real_estate', label: 'Real Estate' },
+  { value: 'insurance', label: 'Insurance' },
+];
+
 export default function Intelligence() {
   const [activeTab, setActiveTab] = useState('signal');
   const [signals, setSignals] = useState([]);
@@ -23,6 +43,8 @@ export default function Intelligence() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [sentimentFilter, setSentimentFilter] = useState('all');
 
   const loadAll = async () => {
     setLoading(true);
@@ -39,6 +61,12 @@ export default function Intelligence() {
   };
 
   useEffect(() => { loadAll(); }, []);
+
+  const filteredEvents = categoryFilter === 'all' ? events : events.filter(e => e.category === categoryFilter);
+  const filteredNews = news.filter(n =>
+    (categoryFilter === 'all' || n.category === categoryFilter) &&
+    (sentimentFilter === 'all' || n.sentiment === sentimentFilter)
+  );
 
   return (
     <div className="p-6 lg:p-10 max-w-7xl mx-auto">
@@ -59,7 +87,7 @@ export default function Intelligence() {
           return (
             <button
               key={t.key}
-              onClick={() => setActiveTab(t.key)}
+              onClick={() => { setActiveTab(t.key); setCategoryFilter('all'); setSentimentFilter('all'); }}
               className={cn(
                 "flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                 active ? "border-accent text-primary" : "border-transparent text-muted-foreground hover:text-primary"
@@ -75,14 +103,42 @@ export default function Intelligence() {
         })}
       </div>
 
+      {(activeTab === 'event' || activeTab === 'news') && !loading && (
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Filter className="w-4 h-4" /> Drill down
+          </div>
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {(activeTab === 'event' ? eventCategories : newsCategories).map(c => (
+                <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {activeTab === 'news' && (
+            <Select value={sentimentFilter} onValueChange={setSentimentFilter}>
+              <SelectTrigger className="w-[150px]"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Sentiments</SelectItem>
+                <SelectItem value="positive">Positive</SelectItem>
+                <SelectItem value="negative">Negative</SelectItem>
+                <SelectItem value="neutral">Neutral</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      )}
+
       {loading ? (
         <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-slate-200 border-t-primary rounded-full animate-spin" /></div>
       ) : activeTab === 'signal' ? (
         <SignalList items={signals} />
       ) : activeTab === 'event' ? (
-        <EventList items={events} />
+        <EventList items={filteredEvents} filtered={categoryFilter !== 'all'} />
       ) : (
-        <NewsList items={news} />
+        <NewsList items={filteredNews} filtered={categoryFilter !== 'all' || sentimentFilter !== 'all'} />
       )}
 
       <AddDialog open={addOpen} onOpenChange={setAddOpen} onAdded={loadAll} defaultType={activeTab} />
@@ -124,10 +180,10 @@ function SignalList({ items }) {
   );
 }
 
-function EventList({ items }) {
+function EventList({ items, filtered }) {
   const impactColors = { low: 'bg-slate-100 text-slate-600', medium: 'bg-amber-100 text-amber-700', high: 'bg-rose-100 text-rose-700' };
   const catColors = { regulatory: 'bg-indigo-50 text-indigo-700', economic: 'bg-blue-50 text-blue-700', competitor: 'bg-purple-50 text-purple-700', market: 'bg-emerald-50 text-emerald-700', geopolitical: 'bg-rose-50 text-rose-700' };
-  if (items.length === 0) return <EmptyState label="market events" />;
+  if (items.length === 0) return <EmptyState label="market events" filtered={filtered} />;
   return (
     <div className="space-y-3">
       {items.map((e) => (
@@ -152,9 +208,9 @@ function EventList({ items }) {
   );
 }
 
-function NewsList({ items }) {
+function NewsList({ items, filtered }) {
   const sentColors = { positive: 'bg-emerald-100 text-emerald-700', negative: 'bg-rose-100 text-rose-700', neutral: 'bg-slate-100 text-slate-600' };
-  if (items.length === 0) return <EmptyState label="investment news" />;
+  if (items.length === 0) return <EmptyState label="investment news" filtered={filtered} />;
   return (
     <div className="space-y-3">
       {items.map((n) => (
@@ -190,11 +246,13 @@ function Tag({ label, value }) {
   );
 }
 
-function EmptyState({ label }) {
+function EmptyState({ label, filtered }) {
   return (
     <Card className="p-12 text-center">
       <Filter className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
-      <p className="text-muted-foreground">No {label} yet. Add intelligence to fuel campaign ideation.</p>
+      <p className="text-muted-foreground">
+        {filtered ? `No ${label} match the current filters.` : `No ${label} yet. Add intelligence to fuel campaign ideation.`}
+      </p>
     </Card>
   );
 }
