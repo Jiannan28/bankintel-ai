@@ -21,6 +21,9 @@ export default function Distribution() {
   const [rmCount, setRmCount] = useState(25);
   const [digitalReach, setDigitalReach] = useState(0);
   const [justDispatched, setJustDispatched] = useState(null);
+  const [testEmail, setTestEmail] = useState('');
+  const [sendingTest, setSendingTest] = useState(false);
+  const [testFeedback, setTestFeedback] = useState(null);
   const [scheduledDate, setScheduledDate] = useState(new Date().toISOString().slice(0, 10));
 
   const load = async () => {
@@ -58,6 +61,23 @@ export default function Distribution() {
     } catch (e) {
       alert('Dispatch failed: ' + (e?.response?.data?.error || e.message));
     } finally { setDispatching(false); }
+  };
+
+  const hasEmailChannel = selectedIdea?.channels?.split(',').map(c => c.trim()).includes('email');
+
+  const sendTestEmail = async () => {
+    if (!testEmail || !/^\S+@\S+\.\S+$/.test(testEmail)) {
+      setTestFeedback({ type: 'error', text: 'Enter a valid email address.' });
+      return;
+    }
+    setSendingTest(true);
+    setTestFeedback(null);
+    try {
+      await base44.functions.invoke('sendTestEmail', { campaign_idea_id: selectedId, test_email: testEmail });
+      setTestFeedback({ type: 'success', text: `Test email sent to ${testEmail}.` });
+    } catch (e) {
+      setTestFeedback({ type: 'error', text: 'Test failed: ' + (e?.response?.data?.error || e.message) });
+    } finally { setSendingTest(false); }
   };
 
   return (
@@ -135,6 +155,24 @@ export default function Distribution() {
                         <Label>Launch Date</Label>
                         <Input type="date" value={scheduledDate} onChange={e => setScheduledDate(e.target.value)} />
                       </div>
+
+                      {hasEmailChannel && (
+                        <div className="bg-slate-50 rounded-lg p-3 space-y-2">
+                          <div className="flex items-center gap-1.5">
+                            <Mail className="w-3.5 h-3.5 text-primary" />
+                            <span className="text-[11px] text-muted-foreground uppercase">Test Email Delivery</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <Input type="email" placeholder="name@example.com" value={testEmail} onChange={e => setTestEmail(e.target.value)} />
+                            <Button variant="outline" onClick={sendTestEmail} disabled={sendingTest || !selectedId} className="shrink-0">
+                              {sendingTest ? 'Sending...' : 'Send Test'}
+                            </Button>
+                          </div>
+                          {testFeedback && (
+                            <p className={cn('text-xs', testFeedback.type === 'success' ? 'text-emerald-600' : 'text-destructive')}>{testFeedback.text}</p>
+                          )}
+                        </div>
+                      )}
 
                       <div className="text-xs text-muted-foreground bg-slate-50 rounded-lg p-3">
                         <div className="flex justify-between mb-1"><span>Messages ready:</span><span className="font-medium text-primary">{selectedMessages.length}</span></div>
