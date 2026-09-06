@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import LiveFeed from '@/components/intelligence/LiveFeed';
+import DateTimeTag from '@/components/intelligence/DateTimeTag';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,22 +47,54 @@ export default function Intelligence() {
   const [addOpen, setAddOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sentimentFilter, setSentimentFilter] = useState('all');
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [newIds, setNewIds] = useState(() => new Set());
+  const seenIdsRef = useRef(null);
+
+  const fetchAll = async () => {
+    const [s, e, n] = await Promise.all([
+      base44.entities.CustomerSignal.list('-signal_date', 50),
+      base44.entities.MarketEvent.list('-event_date', 50),
+      base44.entities.InvestmentNews.list('-published_date', 50),
+    ]);
+    return { s: s || [], e: e || [], n: n || [] };
+  };
+
+  const applyData = ({ s, e, n }) => {
+    const keys = [
+      ...s.map(i => `signal-${i.id}`),
+      ...e.map(i => `event-${i.id}`),
+      ...n.map(i => `news-${i.id}`),
+    ];
+    if (seenIdsRef.current) {
+      setNewIds(new Set(keys.filter(k => !seenIdsRef.current.has(k))));
+    } else {
+      setNewIds(new Set());
+    }
+    seenIdsRef.current = new Set(keys);
+    setSignals(s);
+    setEvents(e);
+    setNews(n);
+    setLastUpdated(new Date());
+  };
 
   const loadAll = async () => {
     setLoading(true);
-    try {
-      const [s, e, n] = await Promise.all([
-        base44.entities.CustomerSignal.list('-signal_date', 50),
-        base44.entities.MarketEvent.list('-event_date', 50),
-        base44.entities.InvestmentNews.list('-published_date', 50),
-      ]);
-      setSignals(s || []);
-      setEvents(e || []);
-      setNews(n || []);
-    } catch (err) { /* ignore */ } finally { setLoading(false); }
+    try { applyData(await fetchAll()); } catch (err) { /* ignore */ } finally { setLoading(false); }
   };
 
+  const refreshFeed = useCallback(async () => {
+    setRefreshing(true);
+    try { applyData(await fetchAll()); } catch (err) { /* ignore */ } finally { setRefreshing(false); }
+  }, []);
+
   useEffect(() => { loadAll(); }, []);
+
+  useEffect(() => {
+    const iv = setInterval(refreshFeed, 30000);
+    return () => clearInterval(iv);
+  }, [refreshFeed]);
 
   const filteredEvents = categoryFilter === 'all' ? events : events.filter(e => e.category === categoryFilter);
   const filteredNews = news.filter(n =>
@@ -79,6 +113,16 @@ export default function Intelligence() {
           <Plus className="w-4 h-4 mr-1.5" /> Add Intelligence
         </Button>
       </div>
+
+      <LiveFeed
+        signals={signals}
+        events={events}
+        news={news}
+        newIds={newIds}
+        lastUpdated={lastUpdated}
+        refreshing={refreshing}
+        onRefresh={refreshFeed}
+      />
 
       <div className="flex gap-1 mb-6 border-b overflow-x-auto">
         {tabs.map((t) => {
@@ -169,7 +213,8 @@ function SignalList({ items }) {
             </div>
           </div>
           <p className="text-sm text-primary mb-3 leading-relaxed">{s.description}</p>
-          <div className="flex flex-wrap gap-2 text-xs">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <DateTimeTag date={s.signal_date} />
             <Tag label="Segment" value={s.customer_segment} />
             <Tag label="Channel" value={s.channel} />
             <Tag label="Product" value={s.product_interest} />
@@ -196,6 +241,7 @@ function EventList({ items, filtered }) {
               </div>
               <h3 className="font-display text-lg text-primary">{e.title}</h3>
             </div>
+            <DateTimeTag date={e.event_date} />
           </div>
           <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{e.description}</p>
           <div className="flex flex-wrap gap-2 text-xs">
@@ -225,6 +271,7 @@ function NewsList({ items, filtered }) {
               <h3 className="font-display text-lg text-primary mb-1">{n.headline}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{n.summary}</p>
             </div>
+            <DateTimeTag date={n.published_date} />
           </div>
           <div className="flex flex-wrap gap-2 text-xs mt-3">
             <Tag label="Source" value={n.source} />
