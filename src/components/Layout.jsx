@@ -31,8 +31,12 @@ export default function Layout() {
       >
         <div className="px-6 py-7 border-b border-white/10">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-accent text-accent-foreground flex items-center justify-center font-display text-lg font-bold">
-              M
+            <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center overflow-hidden shrink-0">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Hang_Seng_Bank_%28emblem%29.svg/250px-Hang_Seng_Bank_%28emblem%29.svg.png"
+                alt="Hang Seng Bank"
+                className="w-8 h-8 object-contain"
+              />
             </div>
             <div>
               <h1 className="font-display text-lg leading-tight">Meridian</h1>

@@ -29,9 +29,9 @@
     --chart-4: 187 70% 40%;
     --chart-5: 45 90% 50%;
     --radius: 0.625rem;
-    --font-heading: "Georgia", "Times New Roman", ui-serif, serif;
-    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-display: "Georgia", "Times New Roman", ui-serif, serif;
+    --font-heading: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    --font-body: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    --font-display: Arial, "Helvetica Neue", Helvetica, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 165 15% 30%;

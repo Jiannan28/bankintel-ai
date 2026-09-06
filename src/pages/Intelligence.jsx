@@ -92,7 +92,7 @@ export default function Intelligence() {
   useEffect(() => { loadAll(); }, []);
 
   useEffect(() => {
-    const iv = setInterval(refreshFeed, 30000);
+    const iv = setInterval(refreshFeed, 12 * 60 * 60 * 1000); // every 12 hours
     return () => clearInterval(iv);
   }, [refreshFeed]);
 

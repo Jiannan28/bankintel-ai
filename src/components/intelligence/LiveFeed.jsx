@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Activity, AlertCircle, TrendingUp, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import moment from 'moment';
+import { formatHKTime } from '@/lib/time';
 import DateTimeTag from './DateTimeTag';
 
 const KINDS = {
@@ -46,7 +46,7 @@ export default function LiveFeed({ signals, events, news, newIds, lastUpdated, r
           </span>
           <h2 className="font-display text-lg text-primary">Live Intelligence Feed</h2>
           <span className="text-xs text-muted-foreground font-mono">
-            {lastUpdated ? `Updated ${moment(lastUpdated).format('HH:mm:ss')}` : 'Loading…'}
+            {lastUpdated ? `Updated ${formatHKTime(lastUpdated)} HKT` : 'Loading…'}
           </span>
           {newCount > 0 && (
             <span className="text-[11px] font-semibold bg-accent text-accent-foreground px-2 py-0.5 rounded-full">
