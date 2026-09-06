@@ -63,7 +63,7 @@ export default function Layout() {
         </nav>
 
         <div className="px-6 py-5 border-t border-white/10 text-[11px] text-white/50">
-          Banking CRM & Campaign Intelligence
+          Banking Market Intelligence Platform
         </div>
       </aside>
 
