@@ -1,0 +1,49 @@
+{
+  "name": "CampaignResult",
+  "type": "object",
+  "properties": {
+    "campaign_idea_id": {
+      "type": "string",
+      "description": "The launched campaign idea this result belongs to"
+    },
+    "campaign_title": {
+      "type": "string"
+    },
+    "actual_reach": {
+      "type": "number",
+      "description": "Customers actually reached"
+    },
+    "actual_conversion_pct": {
+      "type": "number",
+      "description": "Actual conversion rate in percent"
+    },
+    "actual_respondents": {
+      "type": "number",
+      "description": "Customers who responded/converted"
+    },
+    "actual_revenue": {
+      "type": "number",
+      "description": "Revenue attributed to the campaign"
+    },
+    "actual_cost": {
+      "type": "number",
+      "description": "Total campaign cost"
+    },
+    "actual_roi_pct": {
+      "type": "number",
+      "description": "Actual ROI in percent"
+    },
+    "report_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Commentary on performance vs projection"
+    }
+  },
+  "required": [
+    "campaign_idea_id",
+    "campaign_title"
+  ]
+}

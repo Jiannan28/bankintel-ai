@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Radar, Sparkles, CheckSquare, LineChart, Mail, Send, Menu, X, Gauge, Lightbulb } from 'lucide-react';
+import { LayoutDashboard, Radar, Sparkles, CheckSquare, LineChart, Mail, Send, Menu, X, Gauge, Lightbulb, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
   { label: 'Simulation', path: '/simulation', icon: LineChart },
   { label: 'Message Builder', path: '/messages', icon: Mail },
   { label: 'Distribution', path: '/distribution', icon: Send },
+  { label: 'Performance', path: '/performance', icon: BarChart3 },
 ];
 
 export default function Layout() {

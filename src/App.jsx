@@ -14,6 +14,7 @@ import Validation from '@/pages/Validation';
 import Simulation from '@/pages/Simulation';
 import MessageBuilder from '@/pages/MessageBuilder';
 import Distribution from '@/pages/Distribution';
+import Performance from '@/pages/Performance';
 import ScoringEngine from '@/pages/ScoringEngine';
 import Brainstorm from '@/pages/Brainstorm';
 // Add page imports here
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
         <Route path="/simulation" element={<Simulation />} />
         <Route path="/messages" element={<MessageBuilder />} />
         <Route path="/distribution" element={<Distribution />} />
+        <Route path="/performance" element={<Performance />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
