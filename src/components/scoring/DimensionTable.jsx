@@ -33,7 +33,14 @@ export default function DimensionTable({ rows, onRowChange, onDeleteRow }) {
                   className="font-medium text-primary"
                 />
               </td>
-              <td className="py-3 pr-4 text-muted-foreground">{DIMENSION_SOURCES[row.key] || '—'}</td>
+              <td className="py-3 pr-4">
+                <Input
+                  value={row.description ?? ''}
+                  placeholder={DIMENSION_SOURCES[row.key] || 'Describe this dimension'}
+                  onChange={(e) => onRowChange(idx, { description: e.target.value })}
+                  className="text-muted-foreground"
+                />
+              </td>
               <td className="py-3 pr-4">
                 <Input
                   type="number"

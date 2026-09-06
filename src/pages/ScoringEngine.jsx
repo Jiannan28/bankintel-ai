@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Sparkles, SlidersHorizontal, Plus, Save, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import DimensionTable from '@/components/scoring/DimensionTable';
-import { DIMENSION_LABELS } from '@/lib/scoring';
+import { DIMENSION_LABELS, DIMENSION_SOURCES } from '@/lib/scoring';
 
 export default function ScoringEngine() {
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function ScoringEngine() {
       ]);
       setMode(settings?.[0]?.mode || 'ai_gen');
       setSettingsId(settings?.[0]?.id || null);
-      setRows((dims || []).map((d) => ({ id: d.id, name: d.name, key: d.key, weight: d.weight })));
+      setRows((dims || []).map((d) => ({ id: d.id, name: d.name, key: d.key, description: d.description || '', weight: d.weight })));
       setDeletedIds([]);
     } catch (e) {} finally { setLoading(false); }
   };
@@ -67,7 +67,7 @@ export default function ScoringEngine() {
   };
 
   const addRow = () => {
-    setRows([...rows, { name: DIMENSION_LABELS[newKey], key: newKey, weight: 10 }]);
+    setRows([...rows, { name: DIMENSION_LABELS[newKey], key: newKey, description: DIMENSION_SOURCES[newKey] || '', weight: 10 }]);
   };
 
   const totalWeight = rows.reduce((sum, r) => sum + (Number(r.weight) || 0), 0);
@@ -77,9 +77,9 @@ export default function ScoringEngine() {
     setSaveMsg('');
     try {
       for (const id of deletedIds) await base44.entities.ScoringDimension.delete(id);
-      const updates = rows.filter((r) => r.id && r._dirty).map((r) => ({ id: r.id, name: r.name, weight: r.weight }));
+      const updates = rows.filter((r) => r.id && r._dirty).map((r) => ({ id: r.id, name: r.name, description: r.description, weight: r.weight }));
       if (updates.length) await base44.entities.ScoringDimension.bulkUpdate(updates);
-      const creates = rows.filter((r) => !r.id).map((r) => ({ name: r.name, key: r.key, weight: r.weight }));
+      const creates = rows.filter((r) => !r.id).map((r) => ({ name: r.name, key: r.key, description: r.description, weight: r.weight }));
       if (creates.length) await base44.entities.ScoringDimension.bulkCreate(creates);
       await load();
       setSaveMsg('Dimensions saved. Scores on Campaign Ideation now use the updated weights.');

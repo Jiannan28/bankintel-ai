@@ -16,6 +16,10 @@
       ],
       "description": "Data source the dimension is computed from"
     },
+    "description": {
+      "type": "string",
+      "description": "Editable description of the dimension"
+    },
     "weight": {
       "type": "number",
       "description": "Weight percentage 0-100",
