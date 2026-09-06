@@ -51,7 +51,7 @@ export default function Templates() {
     setTemplates(templates.filter((x) => x.id !== t.id));
   };
 
-  const useTemplate = (t) => {
+  const applyTemplate = (t) => {
     let targeting = null;
     try { targeting = t.targeting ? JSON.parse(t.targeting) : null; } catch (e) { targeting = null; }
     sessionStorage.setItem('applyTemplate', JSON.stringify({ focus_product: t.focus_product || '', targeting }));
@@ -91,7 +91,7 @@ export default function Templates() {
             <TemplateCard
               key={t.id}
               template={t}
-              onUse={() => useTemplate(t)}
+              onUse={() => applyTemplate(t)}
               onEdit={() => { setEditing(t); setDialogOpen(true); }}
               onDelete={() => remove(t)}
             />
