@@ -27,6 +27,20 @@ const eventCategories = [
   { value: 'geopolitical', label: 'Geopolitical' },
 ];
 
+const signalCategories = [
+  { value: 'transactional', label: 'Transactional' },
+  { value: 'behavioral', label: 'Behavioral' },
+  { value: 'life_event', label: 'Life Event' },
+  { value: 'engagement', label: 'Engagement' },
+  { value: 'portfolio', label: 'Portfolio' },
+];
+
+const signalSorts = [
+  { value: 'intensity_desc', label: 'Intensity: High to Low' },
+  { value: 'intensity_asc', label: 'Intensity: Low to High' },
+  { value: 'newest', label: 'Newest First' },
+];
+
 const newsCategories = [
   { value: 'equities', label: 'Equities' },
   { value: 'securities', label: 'Securities' },
@@ -48,6 +62,9 @@ export default function Intelligence() {
   const [addOpen, setAddOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sentimentFilter, setSentimentFilter] = useState('all');
+  const [signalTypeFilter, setSignalTypeFilter] = useState('all');
+  const [segmentFilter, setSegmentFilter] = useState('all');
+  const [signalSort, setSignalSort] = useState('intensity_desc');
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [newIds, setNewIds] = useState(() => new Set());
@@ -96,6 +113,18 @@ export default function Intelligence() {
     const iv = setInterval(refreshFeed, 12 * 60 * 60 * 1000); // every 12 hours
     return () => clearInterval(iv);
   }, [refreshFeed]);
+
+  const filteredSignals = signals
+    .filter(s =>
+      (signalTypeFilter === 'all' || s.signal_type === signalTypeFilter) &&
+      (segmentFilter === 'all' || s.customer_segment === segmentFilter)
+    )
+    .sort((a, b) => {
+      if (signalSort === 'intensity_desc') return (b.intensity || 0) - (a.intensity || 0);
+      if (signalSort === 'intensity_asc') return (a.intensity || 0) - (b.intensity || 0);
+      return 0;
+    });
+  const signalSegments = [...new Set(signals.map(s => s.customer_segment).filter(Boolean))].sort();
 
   const filteredEvents = categoryFilter === 'all' ? events : events.filter(e => e.category === categoryFilter);
   const filteredNews = news.filter(n =>
@@ -151,6 +180,40 @@ export default function Intelligence() {
         })}
       </div>
 
+      {activeTab === 'signal' && !loading && (
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Filter className="w-4 h-4" /> Drill down
+          </div>
+          <Select value={signalTypeFilter} onValueChange={setSignalTypeFilter}>
+            <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {signalCategories.map(c => (
+                <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={segmentFilter} onValueChange={setSegmentFilter}>
+            <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Segments</SelectItem>
+              {signalSegments.map(seg => (
+                <SelectItem key={seg} value={seg}>{seg}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={signalSort} onValueChange={setSignalSort}>
+            <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {signalSorts.map(o => (
+                <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       {(activeTab === 'event' || activeTab === 'news') && !loading && (
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -182,7 +245,7 @@ export default function Intelligence() {
       {loading ? (
         <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-slate-200 border-t-primary rounded-full animate-spin" /></div>
       ) : activeTab === 'signal' ? (
-        <SignalList items={signals} />
+        <SignalList items={filteredSignals} filtered={signalTypeFilter !== 'all' || segmentFilter !== 'all'} />
       ) : activeTab === 'event' ? (
         <EventList items={filteredEvents} filtered={categoryFilter !== 'all'} />
       ) : (
