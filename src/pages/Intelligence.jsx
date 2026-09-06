@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import LiveFeed from '@/components/intelligence/LiveFeed';
+import AutoNewsSync from '@/components/intelligence/AutoNewsSync';
 import DateTimeTag from '@/components/intelligence/DateTimeTag';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -109,9 +110,12 @@ export default function Intelligence() {
           <h1 className="font-display text-3xl lg:text-4xl text-primary mb-1">Intelligence Hub</h1>
           <p className="text-muted-foreground">Customer signals, market events, investment news and omni-channel behaviors.</p>
         </div>
-        <Button onClick={() => setAddOpen(true)} className="bg-accent text-accent-foreground hover:bg-accent/90">
-          <Plus className="w-4 h-4 mr-1.5" /> Add Intelligence
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <AutoNewsSync onSynced={refreshFeed} />
+          <Button onClick={() => setAddOpen(true)} className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Plus className="w-4 h-4 mr-1.5" /> Add Intelligence
+          </Button>
+        </div>
       </div>
 
       <LiveFeed
