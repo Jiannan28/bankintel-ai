@@ -18,7 +18,7 @@ export default function DimensionTable({ rows, onRowChange, onDeleteRow }) {
         <thead>
           <tr className="border-b text-left text-[11px] uppercase tracking-wide text-muted-foreground">
             <th className="py-2 pr-4 font-medium">Dimension</th>
-            <th className="py-2 pr-4 font-medium">Data Source</th>
+            <th className="py-2 pr-4 font-medium">Description</th>
             <th className="py-2 pr-4 font-medium">Weight (%)</th>
             <th className="py-2 w-10"></th>
           </tr>
@@ -26,7 +26,13 @@ export default function DimensionTable({ rows, onRowChange, onDeleteRow }) {
         <tbody>
           {rows.map((row, idx) => (
             <tr key={row.id || 'new-' + idx} className="border-b last:border-0">
-              <td className="py-3 pr-4 font-medium text-primary">{row.name}</td>
+              <td className="py-3 pr-4">
+                <Input
+                  value={row.name}
+                  onChange={(e) => onRowChange(idx, { name: e.target.value })}
+                  className="font-medium text-primary"
+                />
+              </td>
               <td className="py-3 pr-4 text-muted-foreground">{DIMENSION_SOURCES[row.key] || '—'}</td>
               <td className="py-3 pr-4">
                 <Input

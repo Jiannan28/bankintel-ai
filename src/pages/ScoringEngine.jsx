@@ -77,7 +77,7 @@ export default function ScoringEngine() {
     setSaveMsg('');
     try {
       for (const id of deletedIds) await base44.entities.ScoringDimension.delete(id);
-      const updates = rows.filter((r) => r.id && r._dirty).map((r) => ({ id: r.id, weight: r.weight }));
+      const updates = rows.filter((r) => r.id && r._dirty).map((r) => ({ id: r.id, name: r.name, weight: r.weight }));
       if (updates.length) await base44.entities.ScoringDimension.bulkUpdate(updates);
       const creates = rows.filter((r) => !r.id).map((r) => ({ name: r.name, key: r.key, weight: r.weight }));
       if (creates.length) await base44.entities.ScoringDimension.bulkCreate(creates);
