@@ -1,0 +1,56 @@
+{
+  "name": "Simulation",
+  "type": "object",
+  "properties": {
+    "campaign_idea_id": {
+      "type": "string"
+    },
+    "campaign_title": {
+      "type": "string"
+    },
+    "scenario_name": {
+      "type": "string"
+    },
+    "assumptions": {
+      "type": "string"
+    },
+    "projected_reach": {
+      "type": "number"
+    },
+    "projected_conversion_pct": {
+      "type": "number"
+    },
+    "projected_respondents": {
+      "type": "number"
+    },
+    "avg_ticket_size": {
+      "type": "number"
+    },
+    "projected_revenue": {
+      "type": "number"
+    },
+    "projected_cost": {
+      "type": "number"
+    },
+    "projected_roi_pct": {
+      "type": "number"
+    },
+    "risk_factors": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "completed",
+        "archived"
+      ],
+      "default": "completed"
+    }
+  },
+  "required": [
+    "campaign_idea_id",
+    "campaign_title",
+    "scenario_name"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "name": "CustomerSignal",
+  "type": "object",
+  "properties": {
+    "customer_segment": {
+      "type": "string",
+      "description": "e.g. Mass Affluent, HNW, Retail, SME, Young Professional"
+    },
+    "signal_type": {
+      "type": "string",
+      "enum": [
+        "transactional",
+        "behavioral",
+        "life_event",
+        "engagement",
+        "portfolio"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "intensity": {
+      "type": "number",
+      "description": "Signal strength 1-100"
+    },
+    "channel": {
+      "type": "string",
+      "description": "Where the signal originated: mobile, web, branch, atm, call_center"
+    },
+    "product_interest": {
+      "type": "string",
+      "description": "Inferred product interest: mortgage, credit_card, wealth, insurance, deposit"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "reviewed",
+        "actioned"
+      ],
+      "default": "new"
+    },
+    "signal_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "customer_segment",
+    "signal_type",
+    "description"
+  ]
+}

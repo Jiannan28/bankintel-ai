@@ -1,0 +1,62 @@
+{
+  "name": "InvestmentNews",
+  "type": "object",
+  "properties": {
+    "headline": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "equities",
+        "fixed_income",
+        "fx",
+        "commodities",
+        "macro",
+        "crypto",
+        "real_estate"
+      ]
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "negative",
+        "neutral"
+      ]
+    },
+    "relevance_score": {
+      "type": "number",
+      "description": "Relevance to bank clients 1-100"
+    },
+    "source": {
+      "type": "string"
+    },
+    "published_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "affected_products": {
+      "type": "string",
+      "description": "Comma separated wealth/investment products affected"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "reviewed",
+        "distributed"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "headline",
+    "summary",
+    "category",
+    "sentiment"
+  ]
+}

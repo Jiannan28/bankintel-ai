@@ -1,0 +1,45 @@
+{
+  "name": "Distribution",
+  "type": "object",
+  "properties": {
+    "campaign_idea_id": {
+      "type": "string"
+    },
+    "campaign_title": {
+      "type": "string"
+    },
+    "target_channels": {
+      "type": "string",
+      "description": "Comma separated channels dispatched to"
+    },
+    "rm_count": {
+      "type": "number",
+      "description": "Number of relationship managers receiving this"
+    },
+    "digital_reach": {
+      "type": "number",
+      "description": "Estimated customers reached via digital channels"
+    },
+    "message_ids": {
+      "type": "string",
+      "description": "Comma separated marketing message IDs included"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "dispatched",
+        "failed"
+      ],
+      "default": "dispatched"
+    },
+    "dispatched_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign_idea_id",
+    "campaign_title",
+    "target_channels"
+  ]
+}

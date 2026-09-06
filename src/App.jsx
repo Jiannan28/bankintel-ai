@@ -6,6 +6,14 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
+import Layout from '@/components/Layout';
+import Dashboard from '@/pages/Dashboard';
+import Intelligence from '@/pages/Intelligence';
+import Ideation from '@/pages/Ideation';
+import Validation from '@/pages/Validation';
+import Simulation from '@/pages/Simulation';
+import MessageBuilder from '@/pages/MessageBuilder';
+import Distribution from '@/pages/Distribution';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -34,7 +42,15 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/intelligence" element={<Intelligence />} />
+        <Route path="/ideation" element={<Ideation />} />
+        <Route path="/validation" element={<Validation />} />
+        <Route path="/simulation" element={<Simulation />} />
+        <Route path="/messages" element={<MessageBuilder />} />
+        <Route path="/distribution" element={<Distribution />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

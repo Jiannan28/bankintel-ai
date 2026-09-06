@@ -1,0 +1,75 @@
+{
+  "name": "CampaignIdea",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "target_segment": {
+      "type": "string"
+    },
+    "objective": {
+      "type": "string",
+      "description": "e.g. Cross-sell, Retention, Acquisition, Activation"
+    },
+    "product": {
+      "type": "string",
+      "description": "Banking product the campaign promotes"
+    },
+    "channels": {
+      "type": "string",
+      "description": "Comma separated channels: email, sms, push, rm_call, whatsapp, in_app"
+    },
+    "expected_reach": {
+      "type": "number"
+    },
+    "expected_conversion_pct": {
+      "type": "number"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "source_intelligence": {
+      "type": "string",
+      "description": "Summary of signals/events/news that informed this idea"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "rejected",
+        "approved",
+        "simulated",
+        "launched"
+      ],
+      "default": "draft"
+    },
+    "generated_by": {
+      "type": "string",
+      "enum": [
+        "ai",
+        "expert"
+      ],
+      "default": "ai"
+    },
+    "expert_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "target_segment",
+    "objective"
+  ]
+}

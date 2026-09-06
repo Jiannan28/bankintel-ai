@@ -1,0 +1,63 @@
+{
+  "name": "MarketingMessage",
+  "type": "object",
+  "properties": {
+    "campaign_idea_id": {
+      "type": "string"
+    },
+    "campaign_title": {
+      "type": "string"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "sms",
+        "push",
+        "rm_call",
+        "whatsapp",
+        "in_app"
+      ]
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "tone": {
+      "type": "string",
+      "enum": [
+        "professional",
+        "warm",
+        "urgent",
+        "advisory",
+        "celebratory"
+      ],
+      "default": "professional"
+    },
+    "language": {
+      "type": "string",
+      "default": "English"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "approved",
+        "sent"
+      ],
+      "default": "draft"
+    },
+    "sent_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "campaign_idea_id",
+    "campaign_title",
+    "channel",
+    "body"
+  ]
+}
