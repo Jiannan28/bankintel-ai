@@ -52,6 +52,18 @@ export default function Ideation() {
 
   useEffect(() => { load(); }, []);
 
+  // Pre-fill from an applied template (Template Library)
+  useEffect(() => {
+    const raw = sessionStorage.getItem('applyTemplate');
+    if (!raw) return;
+    sessionStorage.removeItem('applyTemplate');
+    try {
+      const t = JSON.parse(raw);
+      if (t.focus_product) setFocusProduct(t.focus_product);
+      if (t.targeting) setTargeting(t.targeting);
+    } catch (e) {}
+  }, []);
+
   const generate = async () => {
     setGenerating(true);
     setThinking({ open: true, phase: 'running', reasoning: [], ideas: [], error: null });

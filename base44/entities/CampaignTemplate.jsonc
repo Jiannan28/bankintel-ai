@@ -1,0 +1,33 @@
+{
+  "name": "CampaignTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Display name of the campaign template"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this template is for and when to use it"
+    },
+    "focus_product": {
+      "type": "string",
+      "description": "Banking product the campaign promotes"
+    },
+    "objective": {
+      "type": "string",
+      "description": "e.g. Cross-sell, Retention, Acquisition, Activation"
+    },
+    "channels": {
+      "type": "string",
+      "description": "Comma separated channels: email, sms, push, rm_call, whatsapp, in_app"
+    },
+    "targeting": {
+      "type": "string",
+      "description": "JSON-serialized targeting criteria object"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

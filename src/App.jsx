@@ -17,6 +17,7 @@ import Distribution from '@/pages/Distribution';
 import Performance from '@/pages/Performance';
 import ScoringEngine from '@/pages/ScoringEngine';
 import Brainstorm from '@/pages/Brainstorm';
+import Templates from '@/pages/Templates';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -50,6 +51,7 @@ const AuthenticatedApp = () => {
         <Route path="/intelligence" element={<Intelligence />} />
         <Route path="/ideation" element={<Ideation />} />
         <Route path="/brainstorm" element={<Brainstorm />} />
+        <Route path="/templates" element={<Templates />} />
         <Route path="/scoring" element={<ScoringEngine />} />
         <Route path="/validation" element={<Validation />} />
         <Route path="/simulation" element={<Simulation />} />
