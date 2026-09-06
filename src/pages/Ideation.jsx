@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sparkles, Wand2, ArrowRight, Trash2, Gauge, TrendingUp } from 'lucide-react';
+import { Sparkles, Wand2, ArrowRight, Trash2, Gauge, TrendingUp, SlidersHorizontal } from 'lucide-react';
+import TargetingDialog, { summarizeTargeting } from '@/components/ideation/TargetingDialog';
+import ThinkingDialog from '@/components/ideation/ThinkingDialog';
 import { weightedScore } from '@/lib/scoring';
 import { cn } from '@/lib/utils';
 
@@ -26,7 +28,9 @@ export default function Ideation() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [focusProduct, setFocusProduct] = useState('');
-  const [focusSegment, setFocusSegment] = useState('');
+  const [targeting, setTargeting] = useState(null);
+  const [targetingOpen, setTargetingOpen] = useState(false);
+  const [thinking, setThinking] = useState({ open: false, phase: 'running', reasoning: [], ideas: [], error: null });
   const [settings, setSettings] = useState({ mode: 'ai_gen' });
   const [dimensions, setDimensions] = useState([]);
   const [sortBy, setSortBy] = useState('newest');
@@ -50,11 +54,14 @@ export default function Ideation() {
 
   const generate = async () => {
     setGenerating(true);
+    setThinking({ open: true, phase: 'running', reasoning: [], ideas: [], error: null });
     try {
-      await base44.functions.invoke('generateCampaignIdeas', { focusProduct, focusSegment });
+      const res = await base44.functions.invoke('generateCampaignIdeas', { focusProduct, targeting });
+      const data = res?.ideas !== undefined ? res : (res?.data ?? {});
+      setThinking({ open: true, phase: 'done', reasoning: data?.reasoning || [], ideas: data?.ideas || [], error: null });
       await load();
     } catch (e) {
-      alert('Generation failed: ' + (e?.response?.data?.error || e.message));
+      setThinking({ open: true, phase: 'error', reasoning: [], ideas: [], error: e?.response?.data?.error || e.message });
     } finally { setGenerating(false); }
   };
 
@@ -103,8 +110,15 @@ export default function Ideation() {
               <Input value={focusProduct} onChange={e => setFocusProduct(e.target.value)} placeholder="e.g. mortgage" className="bg-white/10 border-white/20 text-white placeholder:text-white/40" />
             </div>
             <div>
-              <Label className="text-white/80">Focus Segment</Label>
-              <Input value={focusSegment} onChange={e => setFocusSegment(e.target.value)} placeholder="e.g. HNW" className="bg-white/10 border-white/20 text-white placeholder:text-white/40" />
+              <Label className="text-white/80">Targeting Criteria</Label>
+              <button
+                type="button"
+                onClick={() => setTargetingOpen(true)}
+                className="w-full h-9 rounded-md bg-white/10 border border-white/20 text-white text-sm px-3 flex items-center justify-between gap-2 hover:bg-white/15 transition-colors"
+              >
+                <span className="truncate">{summarizeTargeting(targeting) || 'All customers — configure targeting…'}</span>
+                <SlidersHorizontal className="w-4 h-4 shrink-0 opacity-70" />
+              </button>
             </div>
           </div>
           <Button onClick={generate} disabled={generating} className="bg-accent text-accent-foreground hover:bg-accent/90 lg:self-end">
@@ -194,6 +208,14 @@ export default function Ideation() {
           ))}
         </div>
       )}
+
+      <TargetingDialog
+        open={targetingOpen}
+        value={targeting}
+        onSave={setTargeting}
+        onClose={() => setTargetingOpen(false)}
+      />
+      <ThinkingDialog state={thinking} onClose={() => setThinking(t => ({ ...t, open: false }))} />
     </div>
   );
 }
