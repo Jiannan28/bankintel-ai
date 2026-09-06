@@ -12,12 +12,14 @@
       "type": "string",
       "enum": [
         "equities",
+        "securities",
         "fixed_income",
         "fx",
         "commodities",
         "macro",
         "crypto",
-        "real_estate"
+        "real_estate",
+        "insurance"
       ]
     },
     "sentiment": {

@@ -27,12 +27,12 @@ export default function Dashboard() {
     (async () => {
       try {
         const [signals, events, news, ideas, messages, distributions] = await Promise.all([
-          base44.entities.CustomerSignal.list('-signal_date', 1),
-          base44.entities.MarketEvent.list('-event_date', 1),
-          base44.entities.InvestmentNews.list('-published_date', 5),
-          base44.entities.CampaignIdea.list('-created_date', 5),
-          base44.entities.MarketingMessage.list('-created_date', 1),
-          base44.entities.Distribution.list('-created_date', 1),
+          base44.entities.CustomerSignal.list('-signal_date', 200),
+          base44.entities.MarketEvent.list('-event_date', 200),
+          base44.entities.InvestmentNews.list('-published_date', 200),
+          base44.entities.CampaignIdea.list('-created_date', 200),
+          base44.entities.MarketingMessage.list('-created_date', 200),
+          base44.entities.Distribution.list('-created_date', 200),
         ]);
         const ideasArr = ideas || [];
         setStats({
@@ -45,8 +45,8 @@ export default function Dashboard() {
           messages: (messages || []).length,
           distributions: (distributions || []).length,
         });
-        setRecentIdeas(ideasArr);
-        setRecentNews(news || []);
+        setRecentIdeas(ideasArr.slice(0, 5));
+        setRecentNews((news || []).slice(0, 5));
       } catch (e) {
         // ignore
       } finally {
