@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sparkles, Wand2, ArrowRight, Trash2 } from 'lucide-react';
+import { Sparkles, Wand2, ArrowRight, Trash2, Gauge, TrendingUp } from 'lucide-react';
+import { weightedScore } from '@/lib/scoring';
 import { cn } from '@/lib/utils';
 
 const statusColors = {
@@ -26,12 +27,22 @@ export default function Ideation() {
   const [generating, setGenerating] = useState(false);
   const [focusProduct, setFocusProduct] = useState('');
   const [focusSegment, setFocusSegment] = useState('');
+  const [settings, setSettings] = useState({ mode: 'ai_gen' });
+  const [dimensions, setDimensions] = useState([]);
+  const [sortBy, setSortBy] = useState('newest');
+  const [scoring, setScoring] = useState(false);
 
   const load = async () => {
     setLoading(true);
     try {
-      const data = await base44.entities.CampaignIdea.list('-created_date', 50);
+      const [data, settingsData, dimensionData] = await Promise.all([
+        base44.entities.CampaignIdea.list('-created_date', 50),
+        base44.entities.ScoringSettings.list(),
+        base44.entities.ScoringDimension.list(),
+      ]);
       setIdeas(data || []);
+      setSettings(settingsData?.[0] || { mode: 'ai_gen' });
+      setDimensions(dimensionData || []);
     } catch (e) {} finally { setLoading(false); }
   };
 
@@ -51,6 +62,23 @@ export default function Ideation() {
     await base44.entities.CampaignIdea.delete(id);
     setIdeas(ideas.filter(i => i.id !== id));
   };
+
+  const scoreOf = (idea) => settings.mode === 'weighted'
+    ? weightedScore(idea, ideas, dimensions)
+    : idea.ai_score;
+
+  const runAiScoring = async () => {
+    setScoring(true);
+    try {
+      await base44.functions.invoke('scoreCampaignIdeas', {});
+      await load();
+    } catch (e) {
+      alert('AI scoring failed: ' + (e?.response?.data?.error || e.message));
+    } finally { setScoring(false); }
+  };
+
+  const sortedIdeas = [...ideas];
+  if (sortBy === 'score') sortedIdeas.sort((a, b) => (scoreOf(b) ?? -1) - (scoreOf(a) ?? -1));
 
   return (
     <div className="p-6 lg:p-10 max-w-7xl mx-auto">
@@ -85,6 +113,30 @@ export default function Ideation() {
         </div>
       </Card>
 
+      {/* Scoring engine control bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2 text-sm">
+          <Gauge className="w-4 h-4 text-primary" />
+          <span className="text-muted-foreground">Scoring Engine:</span>
+          <span className="font-medium text-primary">{settings.mode === 'weighted' ? 'Configurable Dimensions' : 'AI Generated'}</span>
+          <Link to="/scoring" className="text-accent text-xs underline underline-offset-2">Configure</Link>
+        </div>
+        <div className="flex items-center gap-2">
+          {settings.mode === 'ai_gen' && ideas.length > 0 && (
+            <Button variant="outline" size="sm" onClick={runAiScoring} disabled={scoring}>
+              <Sparkles className="w-3.5 h-3.5 mr-1" /> {scoring ? 'Scoring...' : 'Score with AI'}
+            </Button>
+          )}
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Sort: Newest first</SelectItem>
+              <SelectItem value="score">Sort: Highest score</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-slate-200 border-t-primary rounded-full animate-spin" /></div>
       ) : ideas.length === 0 ? (
@@ -94,7 +146,7 @@ export default function Ideation() {
         </Card>
       ) : (
         <div className="space-y-4">
-          {ideas.map((idea) => (
+          {sortedIdeas.map((idea) => (
             <Card key={idea.id} className="p-6 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between gap-4 mb-3">
                 <div className="flex-1 min-w-0">
@@ -102,6 +154,11 @@ export default function Ideation() {
                     <span className={cn('text-[10px] px-2 py-0.5 rounded-full font-medium uppercase tracking-wide', statusColors[idea.status])}>{idea.status}</span>
                     <span className={cn('text-[10px] px-2 py-0.5 rounded-full font-medium uppercase', priorityColors[idea.priority])}>{idea.priority} priority</span>
                     {idea.generated_by === 'ai' && <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium uppercase">AI</span>}
+                    {scoreOf(idea) != null && (
+                      <span className={cn('text-[10px] px-2 py-0.5 rounded-full font-semibold inline-flex items-center gap-1', scoreOf(idea) >= 70 ? 'bg-emerald-100 text-emerald-700' : scoreOf(idea) >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600')}>
+                        <TrendingUp className="w-3 h-3" /> Score {scoreOf(idea)}
+                      </span>
+                    )}
                   </div>
                   <h3 className="font-display text-xl text-primary mb-1">{idea.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{idea.description}</p>

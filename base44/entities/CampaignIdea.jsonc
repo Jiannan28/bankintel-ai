@@ -64,6 +64,10 @@
     },
     "expert_notes": {
       "type": "string"
+    },
+    "ai_score": {
+      "type": "number",
+      "description": "AI-generated business value score 0-100"
     }
   },
   "required": [

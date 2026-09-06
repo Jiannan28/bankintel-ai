@@ -1,0 +1,18 @@
+{
+  "name": "ScoringSettings",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": [
+        "ai_gen",
+        "weighted"
+      ],
+      "description": "Which scoring engine is active on Campaign Ideation",
+      "default": "ai_gen"
+    }
+  },
+  "required": [
+    "mode"
+  ]
+}

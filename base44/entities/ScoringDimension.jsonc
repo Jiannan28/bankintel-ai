@@ -1,0 +1,29 @@
+{
+  "name": "ScoringDimension",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Display name of the scoring dimension"
+    },
+    "key": {
+      "type": "string",
+      "enum": [
+        "conversion",
+        "reach",
+        "priority",
+        "backing"
+      ],
+      "description": "Data source the dimension is computed from"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Weight percentage 0-100",
+      "default": 20
+    }
+  },
+  "required": [
+    "name",
+    "key"
+  ]
+}

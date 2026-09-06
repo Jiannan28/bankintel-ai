@@ -14,6 +14,7 @@ import Validation from '@/pages/Validation';
 import Simulation from '@/pages/Simulation';
 import MessageBuilder from '@/pages/MessageBuilder';
 import Distribution from '@/pages/Distribution';
+import ScoringEngine from '@/pages/ScoringEngine';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -46,6 +47,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/intelligence" element={<Intelligence />} />
         <Route path="/ideation" element={<Ideation />} />
+        <Route path="/scoring" element={<ScoringEngine />} />
         <Route path="/validation" element={<Validation />} />
         <Route path="/simulation" element={<Simulation />} />
         <Route path="/messages" element={<MessageBuilder />} />

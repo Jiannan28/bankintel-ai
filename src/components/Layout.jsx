@@ -1,13 +1,14 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Radar, Sparkles, CheckSquare, LineChart, Mail, Send, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Radar, Sparkles, CheckSquare, LineChart, Mail, Send, Menu, X, Gauge } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { label: 'Dashboard', path: '/', icon: LayoutDashboard },
   { label: 'Intelligence Hub', path: '/intelligence', icon: Radar },
   { label: 'Campaign Ideation', path: '/ideation', icon: Sparkles },
+  { label: 'Scoring Engine', path: '/scoring', icon: Gauge },
   { label: 'Validation', path: '/validation', icon: CheckSquare },
   { label: 'Simulation', path: '/simulation', icon: LineChart },
   { label: 'Message Builder', path: '/messages', icon: Mail },
