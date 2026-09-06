@@ -1,0 +1,75 @@
+{
+  "name": "News Impact Response",
+  "description": "When a significant investment news item is created, scores its impact on active campaigns with AI and, if impact is high, drafts 3 new campaign ideas and emails the team for immediate review",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "InvestmentNews",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": "${ (.trigger.data.relevance_score // 0) >= 70 }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "news_impact_response",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "score_impact": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "scoreNewsImpact",
+            "args": {
+              "news_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "check_impact",
+          "x-base44": {
+            "title": "Score impact on active campaigns",
+            "description": "AI impact score 0-100"
+          }
+        }
+      },
+      {
+        "check_impact": {
+          "switch": [
+            {
+              "when": "${ .score_impact.impact_score >= 70 }",
+              "then": "draft_ideas"
+            },
+            {
+              "when": "${ true }",
+              "then": "end"
+            }
+          ],
+          "x-base44": {
+            "title": "High impact?",
+            "description": "Impact >= 70"
+          }
+        }
+      },
+      {
+        "draft_ideas": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "draftIdeasFromNews",
+            "args": {
+              "news_id": "${ .trigger.entity_id }",
+              "impact_score": "${ .score_impact.impact_score }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Draft 3 ideas and email team",
+            "description": "Saves drafts, sends review email"
+          }
+        }
+      }
+    ]
+  }
+}
