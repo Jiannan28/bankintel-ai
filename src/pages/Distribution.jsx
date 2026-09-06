@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Send, Users, Smartphone, CheckCircle2, Zap, Mail, Phone, Bell, MessageSquare } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import CampaignCalendar from '@/components/distribution/CampaignCalendar';
 import { cn } from '@/lib/utils';
 
 const channelIcons = { email: Mail, sms: Smartphone, push: Bell, whatsapp: MessageSquare, rm_call: Phone, in_app: Bell };
@@ -19,6 +21,7 @@ export default function Distribution() {
   const [rmCount, setRmCount] = useState(25);
   const [digitalReach, setDigitalReach] = useState(0);
   const [justDispatched, setJustDispatched] = useState(null);
+  const [scheduledDate, setScheduledDate] = useState(new Date().toISOString().slice(0, 10));
 
   const load = async () => {
     setLoading(true);
@@ -47,6 +50,7 @@ export default function Distribution() {
         campaign_idea_id: selectedId,
         rm_count: Number(rmCount),
         digital_reach: Number(digitalReach) || selectedIdea?.expected_reach || 0,
+        scheduled_date: scheduledDate ? new Date(scheduledDate + 'T09:00:00').toISOString() : new Date().toISOString(),
       });
       setJustDispatched(selectedIdea?.title);
       setSelectedId('');
@@ -127,6 +131,10 @@ export default function Distribution() {
                           <Input type="number" value={digitalReach} onChange={e => setDigitalReach(e.target.value)} />
                         </div>
                       </div>
+                      <div>
+                        <Label>Launch Date</Label>
+                        <Input type="date" value={scheduledDate} onChange={e => setScheduledDate(e.target.value)} />
+                      </div>
 
                       <div className="text-xs text-muted-foreground bg-slate-50 rounded-lg p-3">
                         <div className="flex justify-between mb-1"><span>Messages ready:</span><span className="font-medium text-primary">{selectedMessages.length}</span></div>
@@ -144,9 +152,17 @@ export default function Distribution() {
             </Card>
           </div>
 
-          {/* History */}
+          {/* History & Calendar */}
           <div className="lg:col-span-3">
-            <h2 className="font-display text-lg text-primary mb-3">Distribution History</h2>
+            <Tabs defaultValue="calendar">
+              <TabsList className="mb-4">
+                <TabsTrigger value="calendar">Launch Calendar</TabsTrigger>
+                <TabsTrigger value="history">History</TabsTrigger>
+              </TabsList>
+              <TabsContent value="calendar">
+                <CampaignCalendar distributions={distributions} />
+              </TabsContent>
+              <TabsContent value="history">
             {distributions.length === 0 ? (
               <Card className="p-12 text-center">
                 <Send className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
@@ -195,6 +211,8 @@ export default function Distribution() {
                 ))}
               </div>
             )}
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       )}

@@ -7,7 +7,7 @@ export default async function(req: Request): Promise<Response> {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { campaign_idea_id, rm_count, digital_reach } = body || {};
+    const { campaign_idea_id, rm_count, digital_reach, scheduled_date } = body || {};
 
     if (!campaign_idea_id) return Response.json({ error: 'campaign_idea_id required' }, { status: 400 });
 
@@ -31,6 +31,7 @@ export default async function(req: Request): Promise<Response> {
       rm_count: rm_count || 0,
       digital_reach: digital_reach || idea.expected_reach || 0,
       message_ids: messageIds,
+      scheduled_date: scheduled_date || new Date().toISOString(),
       status: "dispatched",
       dispatched_by: user.full_name || user.email
     });

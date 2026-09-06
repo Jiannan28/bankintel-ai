@@ -24,6 +24,11 @@
       "type": "string",
       "description": "Comma separated marketing message IDs included"
     },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the campaign is scheduled to launch"
+    },
     "status": {
       "type": "string",
       "enum": [
