@@ -74,7 +74,7 @@ export default function Dashboard() {
   const tiles = [
     { label: 'Customer Signals', value: stats.signals, icon: Activity, color: 'text-blue-600', bg: 'bg-blue-50', path: '/intelligence' },
     { label: 'CIO Insights', value: stats.events, icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50', path: '/intelligence' },
-    { label: 'Investment News', value: stats.news, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50', path: '/intelligence' },
+    { label: 'Market Events', value: stats.news, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50', path: '/intelligence' },
     { label: 'Campaign Ideas', value: stats.ideas, icon: Sparkles, color: 'text-amber-600', bg: 'bg-amber-50', path: '/ideation' },
     { label: 'Validated', value: stats.validated, icon: CheckSquare, color: 'text-indigo-600', bg: 'bg-indigo-50', path: '/validation' },
     { label: 'Simulated', value: stats.simulated, icon: LineChart, color: 'text-purple-600', bg: 'bg-purple-50', path: '/simulation' },
@@ -83,7 +83,7 @@ export default function Dashboard() {
   ];
 
   const workflow = [
-    { step: '01', label: 'Gather Intelligence', desc: 'Customer signals, CIO insights, investment news', icon: Radar, path: '/intelligence' },
+    { step: '01', label: 'Gather Intelligence', desc: 'Customer signals, CIO insights, market events', icon: Radar, path: '/intelligence' },
     { step: '02', label: 'Generate Ideations', desc: 'AI turns intelligence into campaign ideas', icon: Sparkles, path: '/ideation' },
     { step: '03', label: 'Validate', desc: 'Experts review and approve ideas', icon: CheckSquare, path: '/validation' },
     { step: '04', label: 'Simulate Outcomes', desc: 'Project reach, revenue and ROI', icon: LineChart, path: '/simulation' },
@@ -163,7 +163,7 @@ export default function Dashboard() {
 
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display text-lg text-primary">Latest Investment News</h2>
+                <h2 className="font-display text-lg text-primary">Latest Market Events</h2>
                 <Link to="/intelligence"><Button variant="ghost" size="sm" className="text-accent">View all</Button></Link>
               </div>
               <div className="space-y-3">

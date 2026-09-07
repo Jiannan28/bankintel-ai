@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 const tabs = [
   { key: 'signal', label: 'Customer Signals', icon: Activity },
   { key: 'event', label: 'CIO Insights', icon: AlertCircle },
-  { key: 'news', label: 'Investment News', icon: TrendingUp },
+  { key: 'news', label: 'Market Events', icon: TrendingUp },
 ];
 
 const eventCategories = [
@@ -137,7 +137,7 @@ export default function Intelligence() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
         <div>
           <h1 className="font-display text-3xl lg:text-4xl text-primary mb-1">Intelligence Hub</h1>
-          <p className="text-muted-foreground">Customer signals, CIO insights from the Chief Investment Office, investment news and omni-channel behaviors.</p>
+          <p className="text-muted-foreground">Customer signals, CIO insights from the Chief Investment Office, market events and omni-channel behaviors.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <AutoNewsSync onSynced={refreshFeed} />
@@ -324,7 +324,7 @@ function EventList({ items, filtered }) {
 
 function NewsList({ items, filtered }) {
   const sentColors = { positive: 'bg-emerald-100 text-emerald-700', negative: 'bg-rose-100 text-rose-700', neutral: 'bg-slate-100 text-slate-600' };
-  if (items.length === 0) return <EmptyState label="investment news" filtered={filtered} />;
+  if (items.length === 0) return <EmptyState label="market events" filtered={filtered} />;
   return (
     <div className="space-y-3">
       {items.map((n) => (
@@ -438,7 +438,7 @@ function AddDialog({ open, onOpenChange, onAdded, defaultType }) {
               <SelectContent>
                 <SelectItem value="signal">Customer Signal</SelectItem>
                 <SelectItem value="event">CIO Insight</SelectItem>
-                <SelectItem value="news">Investment News</SelectItem>
+                <SelectItem value="news">Market Event</SelectItem>
               </SelectContent>
             </Select>
           </div>

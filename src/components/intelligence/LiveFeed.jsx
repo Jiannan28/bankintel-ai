@@ -9,7 +9,7 @@ import DateTimeTag from './DateTimeTag';
 const KINDS = {
   signal: { label: 'Signal', icon: Activity, classes: 'bg-blue-50 text-blue-700' },
   event: { label: 'CIO Insight', icon: AlertCircle, classes: 'bg-amber-50 text-amber-700' },
-  news: { label: 'News', icon: TrendingUp, classes: 'bg-emerald-50 text-emerald-700' },
+  news: { label: 'Market Event', icon: TrendingUp, classes: 'bg-emerald-50 text-emerald-700' },
 };
 
 export default function LiveFeed({ signals, events, news, newIds, lastUpdated, refreshing, onRefresh }) {

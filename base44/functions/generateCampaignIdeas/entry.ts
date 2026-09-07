@@ -55,7 +55,7 @@ ${signalsText || 'None available'}
 CIO INSIGHTS (internal views from the bank's Chief Investment Office):
 ${eventsText || 'None available'}
 
-INVESTMENT NEWS:
+MARKET EVENTS (external market news and headlines):
 ${newsText || 'None available'}
 
 ${focusProduct ? `Focus product: ${focusProduct}` : ''}

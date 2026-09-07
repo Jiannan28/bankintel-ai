@@ -150,7 +150,7 @@ export default function Brainstorm() {
             <div>
               <h1 className="font-heading text-2xl text-foreground">Brainstorm Studio</h1>
               <p className="text-sm text-muted-foreground">
-                Co-create a unique campaign idea with the AI partner, grounded in trending investment news.
+                Co-create a unique campaign idea with the AI partner, grounded in trending market events.
               </p>
             </div>
           </div>
@@ -165,7 +165,7 @@ export default function Brainstorm() {
               <p className="font-medium text-foreground">Start the brainstorm</p>
               <p className="text-sm text-muted-foreground max-w-md">
                 Share a focus product or the segment you have in mind. The AI partner will pull the latest
-                trending investment news and shape a unique campaign idea with you, saving it as a draft when
+                trending market events and shape a unique campaign idea with you, saving it as a draft when
                 you approve.
               </p>
             </div>
