@@ -136,7 +136,7 @@ export default function Intelligence() {
     <div className="p-6 lg:p-10 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-3xl lg:text-4xl text-primary mb-1">Intelligence Hub</h1>
+          <h1 className="font-display text-3xl lg:text-4xl text-primary mb-1">Intelligence Radar</h1>
           <p className="text-muted-foreground">Customer signals, CIO insights from the Chief Investment Office, market events and omni-channel behaviors.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

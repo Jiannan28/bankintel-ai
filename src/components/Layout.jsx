@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { label: 'Dashboard', path: '/', icon: LayoutDashboard },
-  { label: 'Intelligence Hub', path: '/intelligence', icon: Radar },
-  { label: 'Campaign Ideation', path: '/ideation', icon: Sparkles },
+  { label: 'Intelligence Radar', path: '/intelligence', icon: Radar },
+  { label: 'Leads Ideation', path: '/ideation', icon: Sparkles },
   { label: 'Brainstorm Studio', path: '/brainstorm', icon: Lightbulb },
   { label: 'Scoring Engine', path: '/scoring', icon: Gauge },
   { label: 'Validation', path: '/validation', icon: CheckSquare },

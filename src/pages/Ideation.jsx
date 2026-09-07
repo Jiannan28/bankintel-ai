@@ -102,7 +102,7 @@ export default function Ideation() {
   return (
     <div className="p-6 lg:p-10 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="font-display text-3xl lg:text-4xl text-primary mb-1">Campaign Ideation</h1>
+        <h1 className="font-display text-3xl lg:text-4xl text-primary mb-1">Leads Ideation</h1>
         <p className="text-muted-foreground">AI generates targeted campaign ideas grounded in your live market intelligence.</p>
       </div>
 
