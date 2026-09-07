@@ -114,7 +114,7 @@ export default function Ideation() {
               <Wand2 className="w-5 h-5 text-accent" />
               <h2 className="font-display text-xl">AI Ideation Engine</h2>
             </div>
-            <p className="text-sm text-white/70">Analyzes customer signals, market events & investment news to propose 3 campaign concepts.</p>
+            <p className="text-sm text-white/70">Analyzes customer signals, CIO insights & investment news to propose 3 campaign concepts.</p>
           </div>
           <div className="grid grid-cols-2 gap-3 lg:w-80">
             <div>

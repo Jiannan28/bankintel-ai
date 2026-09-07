@@ -8,7 +8,7 @@ import DateTimeTag from './DateTimeTag';
 
 const KINDS = {
   signal: { label: 'Signal', icon: Activity, classes: 'bg-blue-50 text-blue-700' },
-  event: { label: 'Event', icon: AlertCircle, classes: 'bg-amber-50 text-amber-700' },
+  event: { label: 'CIO Insight', icon: AlertCircle, classes: 'bg-amber-50 text-amber-700' },
   news: { label: 'News', icon: TrendingUp, classes: 'bg-emerald-50 text-emerald-700' },
 };
 

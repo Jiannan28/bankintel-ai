@@ -22,7 +22,7 @@ export default async function(req: Request): Promise<Response> {
       `- [${s.signal_type}] ${s.customer_segment}: ${s.description} (intensity ${s.intensity || 'n/a'}, product interest: ${s.product_interest || 'unknown'})`
     ).join('\n');
     const eventsText = (events as any[]).map(e =>
-      `- ${e.title} (${e.category}, ${e.impact_level} impact): ${e.description}`
+      `- ${e.title} (${e.category}, ${e.impact_level} impact, affected segments: ${e.affected_segments || 'n/a'}, product categories: ${e.product_category || 'n/a'}): ${e.description}`
     ).join('\n');
     const newsText = (news as any[]).map(n =>
       `- ${n.headline} (${n.category}, ${n.sentiment}): ${n.summary}`
@@ -52,7 +52,7 @@ ${targetingText}
 CUSTOMER SIGNALS:
 ${signalsText || 'None available'}
 
-MARKET EVENTS:
+CIO INSIGHTS (internal views from the bank's Chief Investment Office):
 ${eventsText || 'None available'}
 
 INVESTMENT NEWS:

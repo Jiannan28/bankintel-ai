@@ -3,7 +3,8 @@
   "type": "object",
   "properties": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "description": "Title of the CIO insight"
     },
     "category": {
       "type": "string",
@@ -16,7 +17,8 @@
       ]
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "description": "The Chief Investment Office's view and recommended client action"
     },
     "impact_level": {
       "type": "string",
@@ -30,8 +32,13 @@
       "type": "string",
       "description": "Comma separated customer segments affected"
     },
+    "product_category": {
+      "type": "string",
+      "description": "Comma separated banking product categories the insight relates to (e.g. Wealth, Equities, Fixed Income, FX, Insurance)"
+    },
     "source": {
-      "type": "string"
+      "type": "string",
+      "description": "Origin of the insight, e.g. Chief Investment Office Weekly Outlook"
     },
     "event_date": {
       "type": "string",

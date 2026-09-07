@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 
 const tabs = [
   { key: 'signal', label: 'Customer Signals', icon: Activity },
-  { key: 'event', label: 'Market Events', icon: AlertCircle },
+  { key: 'event', label: 'CIO Insights', icon: AlertCircle },
   { key: 'news', label: 'Investment News', icon: TrendingUp },
 ];
 
@@ -137,7 +137,7 @@ export default function Intelligence() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
         <div>
           <h1 className="font-display text-3xl lg:text-4xl text-primary mb-1">Intelligence Hub</h1>
-          <p className="text-muted-foreground">Customer signals, market events, investment news and omni-channel behaviors.</p>
+          <p className="text-muted-foreground">Customer signals, CIO insights from the Chief Investment Office, investment news and omni-channel behaviors.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <AutoNewsSync onSynced={refreshFeed} />
@@ -295,7 +295,7 @@ function SignalList({ items }) {
 function EventList({ items, filtered }) {
   const impactColors = { low: 'bg-slate-100 text-slate-600', medium: 'bg-amber-100 text-amber-700', high: 'bg-rose-100 text-rose-700' };
   const catColors = { regulatory: 'bg-indigo-50 text-indigo-700', economic: 'bg-blue-50 text-blue-700', competitor: 'bg-purple-50 text-purple-700', market: 'bg-emerald-50 text-emerald-700', geopolitical: 'bg-rose-50 text-rose-700' };
-  if (items.length === 0) return <EmptyState label="market events" filtered={filtered} />;
+  if (items.length === 0) return <EmptyState label="CIO insights" filtered={filtered} />;
   return (
     <div className="space-y-3">
       {items.map((e) => (
@@ -312,7 +312,8 @@ function EventList({ items, filtered }) {
           </div>
           <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{e.description}</p>
           <div className="flex flex-wrap gap-2 text-xs">
-            <Tag label="Affected" value={e.affected_segments} />
+            <Tag label="Affected Segment" value={e.affected_segments} />
+            <Tag label="Product Category" value={e.product_category} />
             <Tag label="Source" value={e.source} />
           </div>
         </Card>
@@ -399,6 +400,7 @@ function AddDialog({ open, onOpenChange, onAdded, defaultType }) {
           description: form.description,
           impact_level: form.impact_level || 'medium',
           affected_segments: form.affected_segments || '',
+          product_category: form.product_category || '',
           source: form.source || '',
           event_date: new Date().toISOString(),
           status: 'new',
@@ -435,7 +437,7 @@ function AddDialog({ open, onOpenChange, onAdded, defaultType }) {
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="signal">Customer Signal</SelectItem>
-                <SelectItem value="event">Market Event</SelectItem>
+                <SelectItem value="event">CIO Insight</SelectItem>
                 <SelectItem value="news">Investment News</SelectItem>
               </SelectContent>
             </Select>
@@ -466,8 +468,9 @@ function AddDialog({ open, onOpenChange, onAdded, defaultType }) {
               <div><Label>Description</Label><Textarea value={form.description || ''} onChange={e => setForm({...form, description: e.target.value})} rows={3} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Affected Segments</Label><Input value={form.affected_segments || ''} onChange={e => setForm({...form, affected_segments: e.target.value})} placeholder="HNW, Mass Affluent" /></div>
-                <div><Label>Source</Label><Input value={form.source || ''} onChange={e => setForm({...form, source: e.target.value})} placeholder="Bloomberg" /></div>
+                <div><Label>Product Category</Label><Input value={form.product_category || ''} onChange={e => setForm({...form, product_category: e.target.value})} placeholder="Wealth, Funds" /></div>
               </div>
+              <div><Label>Source</Label><Input value={form.source || ''} onChange={e => setForm({...form, source: e.target.value})} placeholder="Chief Investment Office" /></div>
             </>
           )}
 
