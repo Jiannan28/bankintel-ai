@@ -43,6 +43,7 @@
       "type": "string",
       "enum": [
         "draft",
+        "pending_review",
         "approved",
         "sent"
       ],

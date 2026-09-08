@@ -18,6 +18,13 @@ const channelMeta = {
   in_app: { icon: Bell, label: 'In-App', color: 'text-teal-600 bg-teal-50' },
 };
 
+const statusMeta = {
+  draft: { label: 'Draft', color: 'bg-slate-100 text-slate-600' },
+  pending_review: { label: 'Pending Review', color: 'bg-amber-100 text-amber-700' },
+  approved: { label: 'Approved', color: 'bg-emerald-100 text-emerald-700' },
+  sent: { label: 'Live', color: 'bg-primary text-primary-foreground' },
+};
+
 export default function MessageBuilder() {
   const [ideas, setIdeas] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -56,6 +63,11 @@ export default function MessageBuilder() {
   const saveMessage = async (msg) => {
     await base44.entities.MarketingMessage.update(msg.id, { subject: msg.subject, body: msg.body, tone: msg.tone });
     setEditing(null);
+    await load();
+  };
+
+  const submitForReview = async (msg) => {
+    await base44.entities.MarketingMessage.update(msg.id, { status: 'pending_review' });
     await load();
   };
 
@@ -145,9 +157,8 @@ export default function MessageBuilder() {
                         </div>
                       </div>
                       <span className={cn('text-[10px] px-2 py-0.5 rounded-full font-medium uppercase',
-                        msg.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
-                        msg.status === 'sent' ? 'bg-primary text-primary-foreground' : 'bg-slate-100 text-slate-600'
-                      )}>{msg.status}</span>
+                        (statusMeta[msg.status] || statusMeta.draft).color
+                      )}>{(statusMeta[msg.status] || statusMeta.draft).label}</span>
                     </div>
 
                     {isEditing ? (
@@ -168,6 +179,11 @@ export default function MessageBuilder() {
                         <div className="flex gap-2 mt-3 pt-3 border-t">
                           <Button size="sm" variant="outline" onClick={() => setEditing({...msg})}>Edit</Button>
                           {msg.status === 'draft' && (
+                            <Button size="sm" onClick={() => submitForReview(msg)} className="bg-amber-500 hover:bg-amber-600 text-white">
+                              Submit for Review
+                            </Button>
+                          )}
+                          {msg.status === 'pending_review' && (
                             <Button size="sm" onClick={() => approveMessage(msg)} className="bg-emerald-600 hover:bg-emerald-700 text-white">
                               Approve
                             </Button>
