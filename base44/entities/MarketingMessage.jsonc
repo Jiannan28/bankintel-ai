@@ -29,10 +29,9 @@
       "type": "string",
       "enum": [
         "professional",
-        "warm",
-        "urgent",
-        "advisory",
-        "celebratory"
+        "casual",
+        "nrc",
+        "youngster"
       ],
       "default": "professional"
     },

@@ -95,10 +95,9 @@ export default function MessageBuilder() {
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="professional">Professional</SelectItem>
-                    <SelectItem value="warm">Warm</SelectItem>
-                    <SelectItem value="urgent">Urgent</SelectItem>
-                    <SelectItem value="advisory">Advisory</SelectItem>
-                    <SelectItem value="celebratory">Celebratory</SelectItem>
+                    <SelectItem value="casual">Casual</SelectItem>
+                    <SelectItem value="nrc">NRC</SelectItem>
+                    <SelectItem value="youngster">Youngster</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
