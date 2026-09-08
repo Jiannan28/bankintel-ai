@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Users, Wallet, TrendingUp, FileText, Trash2 } from 'lucide-react';
+import { Users, Wallet, TrendingUp, FileText, Trash2, ShieldOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const EMPTY = {
@@ -18,6 +18,7 @@ const EMPTY = {
   product_interest: [],
   risk_appetite: '',
   engagement_level: '',
+  exclusions: { key_standard_excl: '', channel_standard_excl: '', product_standard_excl: '', pvc_standard_excl: '' },
   free_text: '',
 };
 
@@ -29,6 +30,13 @@ const INCOME_BANDS = ['Below HK$300k', 'HK$300k-800k', 'HK$800k-2M', 'Above HK$2
 const AUM_BANDS = ['Below HK$500k', 'HK$500k-2M', 'HK$2M-10M', 'Above HK$10M'];
 const RISK_APPETITES = ['Conservative', 'Balanced', 'Growth', 'Aggressive'];
 const ENGAGEMENT = ['Highly digital', 'Mixed channels', 'Branch-preferred'];
+
+const EXCLUSION_FIELDS = [
+  { key: 'key_standard_excl', label: 'Key Standard Excl', options: ['Dormant 12m+', 'No active relationship', 'Staff accounts', 'Under 18', 'Non-resident'] },
+  { key: 'channel_standard_excl', label: 'Channel Standard Excl', options: ['Do-not-contact (any channel)', 'Email unsubscribed', 'SMS opt-out', 'Push opt-out', 'Complaint flag 6m'] },
+  { key: 'product_standard_excl', label: 'Product Standard Excl', options: ['Existing product holder', 'Recent application 30d', 'Recent application 90d', 'Product defaulted 12m', 'Cross-sell max reached'] },
+  { key: 'pvc_standard_excl', label: 'PVC Standard Excl', options: ['High-value PVC only excluded', 'Low engagement PVC', 'PVC in review', 'PVC pending KYC', 'PVC suspended'] },
+];
 
 export function summarizeTargeting(t) {
   if (!t) return null;
@@ -42,6 +50,8 @@ export function summarizeTargeting(t) {
   if (t.product_interest?.length) parts.push(`Interest in ${t.product_interest.join(', ')}`);
   if (t.risk_appetite) parts.push(`${t.risk_appetite} risk`);
   if (t.engagement_level) parts.push(t.engagement_level);
+  const excl = Object.values(t.exclusions || {}).filter(Boolean);
+  if (excl.length) parts.push(`${excl.length} exclusion rule${excl.length > 1 ? 's' : ''}`);
   if (t.free_text) parts.push(`"${t.free_text.slice(0, 24)}${t.free_text.length > 24 ? '…' : ''}"`);
   return parts.length ? parts.join(' · ') : null;
 }
@@ -182,6 +192,25 @@ export default function TargetingDialog({ open, value, onSave, onClose }) {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+          </Section>
+
+          <Section icon={ShieldOff} title="Exclusion Ruleset">
+            <div className="grid grid-cols-2 gap-3">
+              {EXCLUSION_FIELDS.map(f => (
+                <div key={f.key}>
+                  <Label className="text-xs">{f.label}</Label>
+                  <Select
+                    value={draft.exclusions?.[f.key] || undefined}
+                    onValueChange={v => set('exclusions', { ...draft.exclusions, [f.key]: v === draft.exclusions?.[f.key] ? '' : v })}
+                  >
+                    <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
+                    <SelectContent>
+                      {f.options.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ))}
             </div>
           </Section>
 
