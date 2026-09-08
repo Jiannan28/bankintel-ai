@@ -34,7 +34,7 @@ const ENGAGEMENT = ['Highly digital', 'Mixed channels', 'Branch-preferred'];
 const EXCLUSION_FIELDS = [
   { key: 'key_standard_excl', label: 'Key Standard Excl', options: ['Dormant 12m+', 'No active relationship', 'Staff accounts', 'Under 18', 'Non-resident'] },
   { key: 'channel_standard_excl', label: 'Channel Standard Excl', options: ['Do-not-contact (any channel)', 'Email unsubscribed', 'SMS opt-out', 'Push opt-out', 'Complaint flag 6m'] },
-  { key: 'product_standard_excl', label: 'Product Standard Excl', options: ['Existing product holder', 'Recent application 30d', 'Recent application 90d', 'Product defaulted 12m', 'Cross-sell max reached'] },
+  { key: 'product_standard_excl', label: 'Product Standard Excl', options: ['Loan', 'Investment', 'Insurance', 'Credit Card'] },
   { key: 'pvc_standard_excl', label: 'PVC Standard Excl', options: ['High-value PVC only excluded', 'Low engagement PVC', 'PVC in review', 'PVC pending KYC', 'PVC suspended'] },
 ];
 
