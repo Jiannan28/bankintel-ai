@@ -14,6 +14,12 @@ export default async function(req: Request): Promise<Response> {
     const idea = await base44.asServiceRole.entities.CampaignIdea.get(campaign_idea_id);
     const channelList = (channels || idea.channels || 'email, sms, push').split(',').map((c: string) => c.trim()).filter(Boolean);
 
+    const languageGuides: Record<string, string> = {
+      Cantonese: 'Write in colloquial Hong Kong Cantonese (spoken-style Cantonese vocabulary and phrasing, e.g. 你哋, 而家, 唔好錯過), using Traditional Chinese characters throughout. Keep the tone natural as a Hong Konger would speak.',
+      Mandarin: 'Write in standard mainland China style Mandarin (mainland vocabulary and phrasing conventions, e.g. 您, 优惠, 理财产品), using Simplified Chinese characters throughout.'
+    };
+    const languageGuide = languageGuides[language] || 'Write in clear professional English.';
+
     const prompt = `You are a senior banking copywriter. Generate marketing messages for the following campaign, one per channel. Each message must be compliant, professional, and tailored to the channel's format and length conventions.
 
 CAMPAIGN:
@@ -26,6 +32,8 @@ CAMPAIGN:
 CHANNELS: ${channelList.join(', ')}
 TONE: ${tone || 'professional'}
 LANGUAGE: ${language || 'English'}
+
+LANGUAGE INSTRUCTIONS: ${languageGuide}
 
 For each channel produce:
 - channel: the channel name

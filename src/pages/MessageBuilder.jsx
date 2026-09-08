@@ -104,7 +104,14 @@ export default function MessageBuilder() {
               </div>
               <div className="lg:w-40">
                 <Label>Language</Label>
-                <Input value={language} onChange={e => setLanguage(e.target.value)} />
+                <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="English">English</SelectItem>
+                    <SelectItem value="Cantonese">Cantonese</SelectItem>
+                    <SelectItem value="Mandarin">Mandarin</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <Button onClick={generate} disabled={generating || !selectedId} className="bg-accent text-accent-foreground hover:bg-accent/90">
                 <Sparkles className="w-4 h-4 mr-1.5" /> {generating ? 'Generating...' : 'Generate Messages'}
