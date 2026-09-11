@@ -4,8 +4,9 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Send, Users, Smartphone, CheckCircle2, Zap, Mail, Phone, Bell, MessageSquare } from 'lucide-react';
+import { Send, Users, Smartphone, CheckCircle2, Zap, Mail, Phone, Bell, MessageSquare, Split } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
 import CampaignCalendar from '@/components/distribution/CampaignCalendar';
 import { cn } from '@/lib/utils';
 
@@ -25,6 +26,11 @@ export default function Distribution() {
   const [sendingTest, setSendingTest] = useState(false);
   const [testFeedback, setTestFeedback] = useState(null);
   const [scheduledDate, setScheduledDate] = useState(new Date().toISOString().slice(0, 10));
+  const [abEnabled, setAbEnabled] = useState(false);
+  const [variantAId, setVariantAId] = useState('');
+  const [variantBId, setVariantBId] = useState('');
+  const [variantSplit, setVariantSplit] = useState(50);
+  const [winnerMetric, setWinnerMetric] = useState('conversion_rate');
 
   const load = async () => {
     setLoading(true);
@@ -47,6 +53,10 @@ export default function Distribution() {
 
   const dispatch = async () => {
     if (!selectedId) return;
+    if (abEnabled && (!variantAId || !variantBId || variantAId === variantBId)) {
+      alert('Select two different messages as Variant A and Variant B for the A/B test.');
+      return;
+    }
     setDispatching(true);
     try {
       await base44.functions.invoke('distributeCampaign', {
@@ -54,6 +64,11 @@ export default function Distribution() {
         rm_count: Number(rmCount),
         digital_reach: Number(digitalReach) || selectedIdea?.expected_reach || 0,
         scheduled_date: scheduledDate ? new Date(scheduledDate + 'T09:00:00').toISOString() : new Date().toISOString(),
+        ab_test: abEnabled,
+        variant_a_message_id: abEnabled ? variantAId : '',
+        variant_b_message_id: abEnabled ? variantBId : '',
+        variant_split: Number(variantSplit) || 50,
+        winner_metric: abEnabled ? winnerMetric : '',
       });
       setJustDispatched(selectedIdea?.title);
       setSelectedId('');
@@ -117,7 +132,7 @@ export default function Distribution() {
                     <Label>Campaign</Label>
                     <select
                       value={selectedId}
-                      onChange={e => { setSelectedId(e.target.value); setDigitalReach(ideas.find(i => i.id === e.target.value)?.expected_reach || 0); }}
+                      onChange={e => { setSelectedId(e.target.value); setDigitalReach(ideas.find(i => i.id === e.target.value)?.expected_reach || 0); setVariantAId(''); setVariantBId(''); }}
                       className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
                     >
                       <option value="">Select an approved campaign</option>
@@ -154,6 +169,65 @@ export default function Distribution() {
                       <div>
                         <Label>Launch Date</Label>
                         <Input type="date" value={scheduledDate} onChange={e => setScheduledDate(e.target.value)} />
+                      </div>
+
+                      <div className="bg-slate-50 rounded-lg p-3 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <Split className="w-3.5 h-3.5 text-primary" />
+                            <span className="text-[11px] text-muted-foreground uppercase">A/B Test</span>
+                          </div>
+                          <Switch checked={abEnabled} onCheckedChange={setAbEnabled} />
+                        </div>
+                        {abEnabled && (
+                          <div className="space-y-3">
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <Label className="text-xs">Variant A</Label>
+                                <select
+                                  value={variantAId}
+                                  onChange={e => setVariantAId(e.target.value)}
+                                  className="w-full h-9 rounded-md border border-input bg-background px-2 text-xs"
+                                >
+                                  <option value="">Select message</option>
+                                  {selectedMessages.map(m => <option key={m.id} value={m.id}>{m.subject || m.channel} ({m.channel})</option>)}
+                                </select>
+                              </div>
+                              <div>
+                                <Label className="text-xs">Variant B</Label>
+                                <select
+                                  value={variantBId}
+                                  onChange={e => setVariantBId(e.target.value)}
+                                  className="w-full h-9 rounded-md border border-input bg-background px-2 text-xs"
+                                >
+                                  <option value="">Select message</option>
+                                  {selectedMessages.map(m => <option key={m.id} value={m.id}>{m.subject || m.channel} ({m.channel})</option>)}
+                                </select>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <Label className="text-xs">Traffic Split (A %)</Label>
+                                <Input type="number" min="1" max="99" value={variantSplit} onChange={e => setVariantSplit(e.target.value)} />
+                              </div>
+                              <div>
+                                <Label className="text-xs">Winner Metric</Label>
+                                <select
+                                  value={winnerMetric}
+                                  onChange={e => setWinnerMetric(e.target.value)}
+                                  className="w-full h-9 rounded-md border border-input bg-background px-2 text-xs"
+                                >
+                                  <option value="conversion_rate">Conversion Rate</option>
+                                  <option value="click_through_rate">Click-Through Rate</option>
+                                  <option value="revenue">Revenue</option>
+                                </select>
+                              </div>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground">
+                              Est. reach — A: ~{Math.round(((Number(digitalReach) || 0) * (Number(variantSplit) || 0)) / 100).toLocaleString()} · B: ~{Math.round(((Number(digitalReach) || 0) * (100 - (Number(variantSplit) || 0))) / 100).toLocaleString()} · Winner picked by {winnerMetric === 'conversion_rate' ? 'conversion rate' : winnerMetric === 'click_through_rate' ? 'click-through rate' : 'revenue'}
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       {hasEmailChannel && (
@@ -215,7 +289,12 @@ export default function Distribution() {
                         <h3 className="font-display text-lg text-primary">{d.campaign_title}</h3>
                         <p className="text-xs text-muted-foreground">Dispatched by {d.dispatched_by || 'System'}</p>
                       </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium uppercase">{d.status}</span>
+                      <div className="flex gap-1.5">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium uppercase">{d.status}</span>
+                        {d.ab_test && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">A/B {d.variant_split ?? 50}/{100 - (d.variant_split ?? 50)}</span>
+                        )}
+                      </div>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="bg-slate-50 rounded-lg p-3 flex items-center gap-2">

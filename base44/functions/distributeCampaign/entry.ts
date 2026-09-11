@@ -7,7 +7,8 @@ export default async function(req: Request): Promise<Response> {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { campaign_idea_id, rm_count, digital_reach, scheduled_date } = body || {};
+    const { campaign_idea_id, rm_count, digital_reach, scheduled_date,
+            ab_test, variant_a_message_id, variant_b_message_id, variant_split, winner_metric } = body || {};
 
     if (!campaign_idea_id) return Response.json({ error: 'campaign_idea_id required' }, { status: 400 });
 
@@ -33,7 +34,12 @@ export default async function(req: Request): Promise<Response> {
       message_ids: messageIds,
       scheduled_date: scheduled_date || new Date().toISOString(),
       status: "dispatched",
-      dispatched_by: user.full_name || user.email
+      dispatched_by: user.full_name || user.email,
+      ab_test: !!ab_test,
+      variant_a_message_id: ab_test ? (variant_a_message_id || "") : "",
+      variant_b_message_id: ab_test ? (variant_b_message_id || "") : "",
+      variant_split: ab_test ? (Number(variant_split) || 50) : 0,
+      winner_metric: ab_test ? (winner_metric || "") : ""
     });
 
     await base44.asServiceRole.entities.CampaignIdea.update(campaign_idea_id, { status: "launched" });

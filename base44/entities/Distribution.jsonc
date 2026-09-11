@@ -40,6 +40,33 @@
     },
     "dispatched_by": {
       "type": "string"
+    },
+    "ab_test": {
+      "type": "boolean",
+      "description": "Whether this dispatch runs as an A/B test",
+      "default": false
+    },
+    "variant_a_message_id": {
+      "type": "string",
+      "description": "Marketing message used as Variant A"
+    },
+    "variant_b_message_id": {
+      "type": "string",
+      "description": "Marketing message used as Variant B"
+    },
+    "variant_split": {
+      "type": "number",
+      "description": "Percentage of traffic allocated to Variant A (1-99)",
+      "default": 50
+    },
+    "winner_metric": {
+      "type": "string",
+      "enum": [
+        "conversion_rate",
+        "click_through_rate",
+        "revenue"
+      ],
+      "description": "Metric used to decide the winning variant"
     }
   },
   "required": [
