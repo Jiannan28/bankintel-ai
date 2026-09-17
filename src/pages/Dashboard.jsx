@@ -5,7 +5,6 @@ import { Radar, Sparkles, CheckSquare, LineChart, Mail, Send, TrendingUp, AlertC
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import OnePagerButton from '@/components/dashboard/OnePagerButton';
 
 const statusColors = {
   draft: 'bg-slate-100 text-slate-600',
@@ -95,13 +94,8 @@ export default function Dashboard() {
   return (
     <div className="p-6 lg:p-10 max-w-7xl mx-auto">
       <div className="mb-8">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="font-display text-3xl lg:text-4xl text-primary mb-2">Market Intelligence Command Center</h1>
-            <p className="text-muted-foreground">Real-time banking customer signals, CIO insights, and AI-driven campaign ideation — from insight to distribution.</p>
-          </div>
-          <OnePagerButton />
-        </div>
+        <h1 className="font-display text-3xl lg:text-4xl text-primary mb-2">Market Intelligence Command Center</h1>
+        <p className="text-muted-foreground">Real-time banking customer signals, CIO insights, and AI-driven campaign ideation — from insight to distribution.</p>
       </div>
 
       {loading ? (
